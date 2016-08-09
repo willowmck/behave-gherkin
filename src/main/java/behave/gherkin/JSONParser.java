@@ -31,6 +31,7 @@ public class JSONParser {
     private final Gson gson = new Gson();
     private final Reporter reporter;
     private final Formatter formatter;
+    private final double NANOSECOND_CONVERSION = 1e+9;
     
     public JSONParser(Reporter reporter, Formatter formatter) {
         this.reporter = reporter;
@@ -179,9 +180,9 @@ public class JSONParser {
         return n == null ? null : ((Number) n).longValue();
     }
 
-    private Long getMicroseconds(Map map, String key) {
+    private Long getNanoseconds(Map map, String key) {
         Object n = map.get(key);
-        return n == null ? null : new Double((((Number) n)).doubleValue() * 1000000).longValue();
+        return n == null ? null : new Double((((Number) n)).doubleValue() * NANOSECOND_CONVERSION).longValue();
     }
 
     private String errorMessage(Map r) {
@@ -189,7 +190,7 @@ public class JSONParser {
     }
 
     private Long duration(Map r) {
-        return getMicroseconds(r, "duration");
+        return getNanoseconds(r, "duration");
     }
 
     private void before(Map o) {

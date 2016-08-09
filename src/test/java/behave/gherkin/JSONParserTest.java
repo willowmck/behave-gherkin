@@ -92,7 +92,7 @@ public class JSONParserTest {
         assertEquals("steps/simple.py:3", match.get("location"));
         
         Map result = (Map) given.get("result");
-        assertEquals(198625.0, result.get("duration"));
+        assertEquals(1.98625802E8, result.get("duration"));
         assertEquals("passed", result.get("status"));
     }
     
