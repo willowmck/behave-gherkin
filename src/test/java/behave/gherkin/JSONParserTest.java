@@ -106,10 +106,52 @@ public class JSONParserTest {
         assertEquals("Feature", featureJson.get("keyword"));
         assertEquals("test/features/env_start.feature", featureJson.get("uri"));
         assert(1 == ((Double)featureJson.get("line")).intValue());
-        assertEquals("Start all SAS services across an environment", featureJson.get("name"));
+        assertEquals("Start all services across an environment", featureJson.get("name"));
         assertEquals("passed", featureJson.get("status"));
         
         List tags = (List) featureJson.get("tags");
         assertNull(tags);
+    }
+    
+    @Test
+    public void testFailedSteps() {
+        StringBuilder stringBuilder = new StringBuilder();
+        setupParser(stringBuilder, BehaveReports.TEST_WITH_STDOUT_AND_ERRORS);
+        List parserResult = getResult(stringBuilder);
+        
+        Map featureJson = (Map) parserResult.get(0);
+        assertEquals("Feature", featureJson.get("keyword"));
+        assertEquals("test/features/env_start.feature", featureJson.get("uri"));
+        assert(1 == ((Double)featureJson.get("line")).intValue());
+        assertEquals("Start all services across an environment", featureJson.get("name"));
+        assertEquals("failed", featureJson.get("status"));
+        
+        List elements = (List) featureJson.get("elements");
+        Map scenario = (Map) elements.get(1);
+        
+        assertEquals("Scenario", scenario.get("keyword"));
+        assertEquals("test/features/env_start.feature", scenario.get("uri"));
+        assert(10 == ((Double)scenario.get("line")).intValue());
+        assertEquals("Start an environment with init script errors", scenario.get("name"));
+        List steps = (List) scenario.get("steps");
+        Map given = (Map) steps.get(0);
+        
+        assertEquals("Given", given.get("keyword"));
+        assertEquals("test/features/env_start.feature", given.get("uri"));
+        assert(11 == ((Double)given.get("line")).intValue());
+        Map match = (Map) given.get("match");
+        assertEquals("test/features/steps/env_start.py:50", match.get("location"));
+        assertEquals("a stopped environment that will have init script errors on startup", given.get("name"));
+        Map result = (Map) given.get("result");
+        assertEquals(1.6141891E7, result.get("duration"));
+        assertEquals("passed", result.get("status"));
+        
+        Map then = (Map) steps.get(2);
+        assertEquals("Then", then.get("keyword"));
+        assertEquals("I would expect a message saying that init scripts had errors", then.get("name"));
+        result = (Map) then.get("result");
+        assertEquals(4040956.0, result.get("duration"));
+        List<String> errorMessages = (List<String>) result.get("error_message");
+        assertEquals("Traceback (most recent call last):", errorMessages.get(0));
     }
 }

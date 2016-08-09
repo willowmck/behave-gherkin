@@ -185,8 +185,8 @@ public class JSONParser {
         return n == null ? null : new Double((((Number) n)).doubleValue() * NANOSECOND_CONVERSION).longValue();
     }
 
-    private String errorMessage(Map r) {
-        return getString(r, "error_message");
+    private List errorMessage(Map r) {
+        return getList(r, "error_message");
     }
 
     private Long duration(Map r) {

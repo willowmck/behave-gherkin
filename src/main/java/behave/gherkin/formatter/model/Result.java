@@ -4,6 +4,8 @@ import behave.gherkin.formatter.Mappable;
 import behave.gherkin.formatter.Reporter;
 import java.io.PrintWriter;
 import java.io.StringWriter;
+import java.util.ArrayList;
+import java.util.List;
 
 public class Result extends Mappable {
     private static final long serialVersionUID = 1L;
@@ -15,7 +17,7 @@ public class Result extends Mappable {
     
     private final String status;
     private final Long duration;
-    private final String error_message;
+    private final List<String> error_message;
     private final Throwable error;
 
     /**
@@ -29,7 +31,9 @@ public class Result extends Mappable {
     public Result(String status, Long duration, Throwable error, Object dummy) {
         this.status = status;
         this.duration = duration;
-        this.error_message = error != null ? getErrorMessage(error) : null;
+        this.error_message = new ArrayList<>();
+        if (null != error) 
+            error_message.add(getErrorMessage(error));
         this.error = error;
     }
     
@@ -40,7 +44,7 @@ public class Result extends Mappable {
      * @param duration
      * @param errorMessage
      */
-    public Result(String status, Long duration, String errorMessage) {
+    public Result(String status, Long duration, List errorMessage) {
         this.status = status;
         this.duration = duration;
         this.error_message = errorMessage;
@@ -59,7 +63,7 @@ public class Result extends Mappable {
         return status;
     }
 
-    public String getErrorMessage() {
+    public List<String> getErrorMessage() {
         return error_message;
     }
 
